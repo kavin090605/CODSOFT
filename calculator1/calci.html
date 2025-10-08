@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Animated Calculator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+    :root {
+      --bg-light: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      --bg-dark: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 100%);
+      --calc-bg-light: rgba(255, 255, 255, 0.25);
+      --calc-bg-dark: rgba(30, 30, 30, 0.8);
+      --btn-bg-light: rgba(255, 255, 255, 0.4);
+      --btn-bg-dark: rgba(40, 40, 40, 0.9);
+      --btn-hover-light: rgba(255, 255, 255, 0.7);
+      --btn-hover-dark: rgba(60, 60, 60, 0.9);
+      --text-light: #2d3748;
+      --text-dark: #ffffff;
+      --shadow-light: 0 8px 32px rgba(31, 38, 135, 0.37);
+      --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.5);
+      --accent: #667eea;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--bg-light);
+      transition: all 0.4s ease;
+      z-index: -1;
+    }
+
+    body.dark::before {
+      background: var(--bg-dark);
+    }
+
+    /* Floating particles animation */
+    body::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+        radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.3), transparent),
+        radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.2), transparent);
+      background-size: 200px 100px;
+      animation: float 20s ease-in-out infinite;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(180deg); }
+    }
+
+    .calculator {
+      width: 360px;
+      padding: 30px;
+      border-radius: 25px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calculator::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--calc-bg-light);
+      border-radius: 25px;
+      transition: all 0.4s ease;
+      z-index: -1;
+    }
+
+    body.dark .calculator::before {
+      background: var(--calc-bg-dark);
+    }
+
+    .calculator {
+      box-shadow: var(--shadow-light);
+      color: var(--text-light);
+    }
+
+    body.dark .calculator {
+      box-shadow: var(--shadow-dark);
+      color: var(--text-dark);
+    }
+
+    @keyframes slideIn {
+      0% { 
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      100% { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, var(--accent), #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .toggle-btn {
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .toggle-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--btn-bg-light);
+      border-radius: 50px;
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+
+    body.dark .toggle-btn::before {
+      background: var(--btn-bg-dark);
+    }
+
+    .toggle-btn {
+      color: var(--text-light);
+    }
+
+    body.dark .toggle-btn {
+      color: var(--text-dark);
+    }
+
+    .toggle-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .toggle-btn:hover::before {
+      background: var(--btn-hover-light);
+    }
+
+    body.dark .toggle-btn:hover::before {
+      background: var(--btn-hover-dark);
+    }
+
+    .display {
+      width: 100%;
+      height: 80px;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 2.5rem;
+      font-weight: 300;
+      text-align: right;
+      margin-bottom: 25px;
+      padding: 20px;
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      font-family: 'Inter', monospace;
+      position: relative;
+    }
+
+    .display::placeholder {
+      color: rgba(var(--text-light), 0.5);
+    }
+
+    body.dark .display::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .display {
+      color: var(--text-light);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark .display {
+      color: var(--text-dark);
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid rgba(60, 60, 60, 0.3);
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    button:not(.toggle-btn) {
+      padding: 20px;
+      font-size: 1.3rem;
+      font-weight: 500;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    button:not(.toggle-btn)::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--btn-bg-light);
+      border-radius: 15px;
+      transition: all 0.3s ease;
+      z-index: -1;
+    }
+
+    body.dark button:not(.toggle-btn)::before {
+      background: var(--btn-bg-dark);
+    }
+
+    button:not(.toggle-btn) {
+      color: var(--text-light);
+    }
+
+    body.dark button:not(.toggle-btn) {
+      color: var(--text-dark);
+    }
+
+    button:not(.toggle-btn):hover {
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    button:not(.toggle-btn):hover::before {
+      background: var(--btn-hover-light);
+    }
+
+    body.dark button:not(.toggle-btn):hover::before {
+      background: var(--btn-hover-dark);
+    }
+
+    button:not(.toggle-btn):active {
+      transform: translateY(-1px) scale(1.01);
+      transition: all 0.1s ease;
+    }
+
+    /* Ripple effect */
+    button:not(.toggle-btn)::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(0);
+      animation: ripple 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    .span-two {
+      grid-column: span 2;
+    }
+
+    .operator {
+      background: linear-gradient(135deg, var(--accent), #764ba2) !important;
+      color: white !important;
+      font-weight: 600;
+    }
+
+    .operator::before {
+      background: linear-gradient(135deg, var(--accent), #764ba2) !important;
+    }
+
+    .equals {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+      color: white !important;
+      font-weight: 600;
+    }
+
+    .equals::before {
+      background: linear-gradient(135deg, #ff6b6b, #ee5a24) !important;
+    }
+
+    /* Number animations */
+    .number-animation {
+      animation: numberPulse 0.3s ease-out;
+    }
+
+    @keyframes numberPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* Error state */
+    .error {
+      color: #ff6b6b !important;
+      animation: shake 0.5s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 480px) {
+      .calculator {
+        width: 90%;
+        max-width: 320px;
+        padding: 20px;
+      }
+      
+      .display {
+        font-size: 2rem;
+        height: 70px;
+      }
+      
+      button:not(.toggle-btn) {
+        padding: 15px;
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="header">
+      <div class="logo">CALC</div>
+      <button class="toggle-btn" onclick="toggleMode()">🌙 Dark</button>
+    </div>
+    <input type="text" id="display" class="display" placeholder="0" disabled>
+    <div class="buttons">
+      <button onclick="clearDisplay()">C</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="append('%')" class="operator">%</button>
+      <button onclick="append('/')" class="operator">÷</button>
+
+      <button onclick="append('7')" class="number">7</button>
+      <button onclick="append('8')" class="number">8</button>
+      <button onclick="append('9')" class="number">9</button>
+      <button onclick="append('*')" class="operator">×</button>
+
+      <button onclick="append('4')" class="number">4</button>
+      <button onclick="append('5')" class="number">5</button>
+      <button onclick="append('6')" class="number">6</button>
+      <button onclick="append('-')" class="operator">−</button>
+
+      <button onclick="append('1')" class="number">1</button>
+      <button onclick="append('2')" class="number">2</button>
+      <button onclick="append('3')" class="number">3</button>
+      <button onclick="append('+')" class="operator">+</button>
+
+      <button onclick="append('0')" class="span-two number">0</button>
+      <button onclick="append('.')" class="number">.</button>
+      <button onclick="calculate()" class="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    const display = document.getElementById("display");
+
+    function append(value) {
+      if (display.value === "0" || display.classList.contains('error')) {
+        display.value = "";
+        display.classList.remove('error');
+      }
+      display.value += value;
+      
+      // Add number animation
+      display.classList.add('number-animation');
+      setTimeout(() => display.classList.remove('number-animation'), 300);
+    }
+
+    function clearDisplay() {
+      display.value = "";
+      display.classList.remove('error');
+      display.placeholder = "0";
+      
+      // Add clear animation
+      display.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        display.style.transform = 'scale(1)';
+      }, 150);
+    }
+
+    function backspace() {
+      display.value = display.value.slice(0, -1);
+      display.classList.remove('error');
+      if (display.value === "") {
+        display.placeholder = "0";
+      }
+    }
+
+    function calculate() {
+      try {
+        const result = eval(display.value.replace(/÷/g, '/').replace(/×/g, '*').replace(/−/g, '-'));
+        if (!isFinite(result)) {
+          throw new Error('Invalid calculation');
+        }
+        display.value = result;
+        
+        // Add success animation
+        display.style.transform = 'scale(1.05)';
+        setTimeout(() => {
+          display.style.transform = 'scale(1)';
+        }, 200);
+        
+      } catch (error) {
+        display.value = "Error";
+        display.classList.add('error');
+        
+        // Vibrate if supported
+        if (navigator.vibrate) {
+          navigator.vibrate(200);
+        }
+      }
+    }
+
+    function toggleMode() {
+      const body = document.body;
+      const btn = document.querySelector(".toggle-btn");
+      
+      body.classList.toggle("dark");
+      
+      // Add toggle animation
+      btn.style.transform = 'scale(0.9) rotate(180deg)';
+      setTimeout(() => {
+        if (body.classList.contains("dark")) {
+          btn.innerHTML = "☀️ Light";
+        } else {
+          btn.innerHTML = "🌙 Dark";
+        }
+        btn.style.transform = 'scale(1) rotate(0deg)';
+      }, 150);
+    }
+
+    // Add ripple effect on button click
+    document.querySelectorAll('button').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.height, rect.width);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
+        
+        ripple.style.width = ripple.style.height = size + 'px';
+        ripple.style.left = x + 'px';
+        ripple.style.top = y + 'px';
+        ripple.classList.add('ripple');
+        
+        this.appendChild(ripple);
+        
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    // Initialize display
+    display.placeholder = "0";
+
+    // Add keyboard support
+    document.addEventListener('keydown', function(e) {
+      e.preventDefault();
+      
+      const key = e.key;
+      
+      if (/[0-9]/.test(key)) {
+        append(key);
+      } else if (key === '+') {
+        append('+');
+      } else if (key === '-') {
+        append('-');
+      } else if (key === '*') {
+        append('*');
+      } else if (key === '/') {
+        append('/');
+      } else if (key === '.') {
+        append('.');
+      } else if (key === '%') {
+        append('%');
+      } else if (key === 'Enter' || key === '=') {
+        calculate();
+      } else if (key === 'Escape' || key.toLowerCase() === 'c') {
+        clearDisplay();
+      } else if (key === 'Backspace') {
+        backspace();
+      }
+    });
+  </script>
+</body>
+</html>
