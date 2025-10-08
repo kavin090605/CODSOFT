@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kavin's Portfolio</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary-blue: #0066ff;
+      --dark-blue: #0052cc;
+      --light-blue: #4d94ff;
+      --accent-blue: #00bfff;
+      --black: #000000;
+      --dark-gray: #111111;
+      --medium-gray: #1a1a1a;
+      --light-gray: #333333;
+      --white: #ffffff;
+      --text-light: #e0e0e0;
+      --shadow: 0 10px 30px rgba(0, 102, 255, 0.3);
+      --glow: 0 0 20px rgba(0, 102, 255, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--black) 0%, var(--dark-gray) 100%);
+      color: var(--text-light);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Animated background particles */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 20%, rgba(0, 102, 255, 0.1) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 80%, rgba(0, 191, 255, 0.1) 0%, transparent 50%);
+      z-index: -1;
+      animation: float 10s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      33% { transform: translate(30px, -30px) rotate(120deg); }
+      66% { transform: translate(-20px, 20px) rotate(240deg); }
+    }
+
+    /* Header Styles */
+    header {
+      position: relative;
+      text-align: center;
+      padding: 4rem 1rem;
+      background: linear-gradient(45deg, var(--primary-blue), var(--dark-blue));
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+
+    header h1 {
+      font-size: 4rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+      animation: slideDown 1s ease-out;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    header p {
+      font-size: 1.3rem;
+      color: var(--text-light);
+      font-weight: 300;
+      animation: slideUp 1s ease-out 0.3s both;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Toggle Button */
+    .toggle-btn {
+      position: fixed;
+      right: 30px;
+      top: 30px;
+      padding: 12px 20px;
+      border: 2px solid var(--primary-blue);
+      cursor: pointer;
+      border-radius: 25px;
+      background: var(--medium-gray);
+      color: var(--primary-blue);
+      font-weight: 600;
+      transition: all 0.3s ease;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .toggle-btn:hover {
+      background: var(--primary-blue);
+      color: var(--white);
+      box-shadow: var(--glow);
+      transform: scale(1.05);
+    }
+
+    /* Section Styles */
+    section {
+      padding: 4rem 1rem;
+      max-width: 1200px;
+      margin: auto;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 3rem;
+      font-size: 2.5rem;
+      font-weight: 600;
+      background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(45deg, var(--primary-blue), var(--accent-blue));
+      border-radius: 2px;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* About Section */
+    .about-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3rem;
+      max-width: 800px;
+      margin: auto;
+      flex-wrap: wrap;
+    }
+
+    .profile-pic {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid var(--primary-blue);
+      box-shadow: 0 0 30px rgba(0, 102, 255, 0.4);
+      transition: all 0.4s ease;
+      animation: profileFloat 6s ease-in-out infinite;
+    }
+
+    .profile-pic:hover {
+      transform: scale(1.05);
+      box-shadow: var(--glow);
+    }
+
+    @keyframes profileFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .about-container p {
+      flex: 1;
+      min-width: 300px;
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--text-light);
+      text-align: left;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 2rem;
+      }
+
+      .about-container p {
+        text-align: center;
+      }
+
+      .profile-pic {
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    /* Card Grid */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .card {
+      background: linear-gradient(145deg, var(--medium-gray), var(--light-gray));
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid rgba(0, 102, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary-blue), var(--accent-blue));
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .card:hover {
+      transform: translateY(-15px) rotateX(5deg);
+      box-shadow: var(--shadow);
+      border-color: var(--primary-blue);
+    }
+
+    .skill-card {
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100px;
+    }
+
+    /* Project Cards */
+    .project-card h3 {
+      color: var(--primary-blue);
+      margin-bottom: 1rem;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .project-card p {
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+
+    /* Contact Section */
+    .contact-info {
+      text-align: center;
+      font-size: 1.1rem;
+    }
+
+    .contact-info p {
+      margin: 1rem 0;
+      transition: all 0.3s ease;
+    }
+
+    .contact-info p:hover {
+      color: var(--primary-blue);
+      transform: scale(1.05);
+    }
+
+    /* Resume Section */
+    .resume-section {
+      text-align: center;
+    }
+
+    .resume-section a {
+      display: inline-block;
+      padding: 15px 30px;
+      background: linear-gradient(45deg, var(--primary-blue), var(--dark-blue));
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 20px rgba(0, 102, 255, 0.3);
+    }
+
+    .resume-section a:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--glow);
+      background: linear-gradient(45deg, var(--dark-blue), var(--accent-blue));
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      background: linear-gradient(45deg, var(--dark-gray), var(--black));
+      border-top: 1px solid var(--light-gray);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 3rem;
+      }
+
+      header p {
+        font-size: 1.1rem;
+      }
+
+      h2 {
+        font-size: 2rem;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      section {
+        padding: 3rem 1rem;
+      }
+    }
+
+    /* Scroll Animation */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease-out;
+    }
+
+    .animate-on-scroll.animated {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Loading animation */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading {
+      animation: pulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body>
+
+  
+  <header>
+    <h1>Kavin</h1>
+    <p>Web Developer | Designer | Creator</p>
+  </header>
+
+  <section>
+    <h2>About Me</h2>
+    <div class="about-container">
+      <img src="photop.jpg" alt="My Photo" class="profile-pic">
+      <p>
+        Hello! I'm kavin, a passionate web developer who loves building clean and modern websites. 
+        I enjoy working with HTML, CSS, and JavaScript to create unique digital experiences.
+      </p>
+    </div>
+  </section>
+
+  <section class="animate-on-scroll">
+    <h2>Skills</h2>
+    <div class="card-grid">
+      <div class="card skill-card">🌐 HTML & CSS</div>
+      <div class="card skill-card">⚡ JavaScript</div>
+      <div class="card skill-card">🎨 UI/UX Design</div>
+      <div class="card skill-card">📱 Responsive Design</div>
+    </div>
+  </section>
+
+  <section class="animate-on-scroll">
+    <h2>Projects</h2>
+    <div class="card-grid">
+      <div class="card project-card">
+        <h3>Portfolio Website</h3>
+        <p>A responsive personal portfolio built with HTML, CSS, and JavaScript featuring modern animations and interactive elements.</p>
+      </div>
+      <div class="card project-card">
+        <h3>Weather App</h3>
+        <p>A sleek weather application that fetches real-time weather data using APIs with beautiful UI transitions.</p>
+      </div>
+      <div class="card project-card">
+        <h3>Landing Page</h3>
+        <p>Modern landing page design with smooth animations, parallax effects, and optimized performance.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="animate-on-scroll resume-section">
+    <h2>Resume</h2>
+    <p>Download my <a href="Res.pdf">Resume (PDF)</a></p>
+  </section>
+
+  <section class="animate-on-scroll">
+    <h2>Contact</h2>
+    <div class="contact-info">
+      <p>📧 Email: kavin@example.com</p>
+      <p>📱 Phone: +91 9268238135</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Kavin. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    function toggleMode() {
+      const btn = document.querySelector(".toggle-btn");
+      btn.textContent = btn.textContent === "🌙 Dark" ? "☀️ Light" : "🌙 Dark";
+    }
+
+    // Scroll animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animated');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => {
+      observer.observe(el);
+    });
+
+    // Add stagger animation to cards
+    document.querySelectorAll('.card').forEach((card, index) => {
+      card.style.animationDelay = `${index * 0.1}s`;
+    });
+
+    // Smooth scrolling for internal links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
